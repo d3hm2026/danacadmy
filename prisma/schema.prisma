@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  phone     String   @unique
+  password  String
+  name      String?
+  role      String   @default("student")
+  createdAt DateTime @default(now())
+
+  sessions ExamSession[]
+  exams    ExamStudent[]
+}
+
+model Exam {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  totalScore  Float    @default(100)
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  sections Section[]
+  students ExamStudent[]
+  sessions ExamSession[]
+}
+
+model Section {
+  id        String @id @default(cuid())
+  title     String
+  order     Int
+  timeLimit Int
+  examId    String
+
+  exam      Exam       @relation(fields: [examId], references: [id], onDelete: Cascade)
+  questions Question[]
+  answers   Answer[]
+}
+
+model Question {
+  id        String @id @default(cuid())
+  text      String
+  score     Float  @default(1)
+  order     Int
+  sectionId String
+
+  section Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  choices Choice[]
+  answers Answer[]
+}
+
+model Choice {
+  id         String @id @default(cuid())
+  text       String
+  percentage Float  @default(0)
+  questionId String
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answers  Answer[]
+}
+
+model ExamStudent {
+  id     String @id @default(cuid())
+  examId String
+  userId String
+
+  exam Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, userId])
+}
+
+model ExamSession {
+  id             String    @id @default(cuid())
+  examId         String
+  userId         String
+  startedAt      DateTime  @default(now())
+  finishedAt     DateTime?
+  totalScore     Float?
+  currentSection Int       @default(0)
+
+  exam         Exam          @relation(fields: [examId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  answers      Answer[]
+  sectionTimes SectionTime[]
+}
+
+model SectionTime {
+  id          String   @id @default(cuid())
+  sessionId   String
+  sectionId   String
+  timeSpent   Int
+  completedAt DateTime @default(now())
+
+  session ExamSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+model Answer {
+  id         String  @id @default(cuid())
+  sessionId  String
+  questionId String
+  choiceId   String?
+  sectionId  String
+  score      Float   @default(0)
+
+  session  ExamSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id])
+  choice   Choice?     @relation(fields: [choiceId], references: [id])
+  section  Section     @relation(fields: [sectionId], references: [id])
+
+  @@unique([sessionId, questionId])
+}
