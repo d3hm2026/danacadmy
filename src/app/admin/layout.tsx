@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -16,7 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <Image src="/logo.png" alt="أكاديمية دان" width={32} height={32} />
+              <img src="/logo.svg" alt="أكاديمية دان" width={32} height={32} className="rounded" />
               <span className="font-bold text-[#1a2e5a] text-lg">أكاديمية دان</span>
             </div>
             <div className="flex gap-1">

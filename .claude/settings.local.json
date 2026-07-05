@@ -11,7 +11,9 @@
       "Bash(git commit *)",
       "Bash(git push *)",
       "Bash(npx prisma *)",
-      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\registrations\" 2>/dev/null; mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\registrations\\\\[id]\" 2>/dev/null; echo done)"
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\registrations\" 2>/dev/null; mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\registrations\\\\[id]\" 2>/dev/null; echo done)",
+      "Bash(git config *)",
+      "Bash(npx vercel *)"
     ]
   }
 }
