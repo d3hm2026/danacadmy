@@ -6,7 +6,12 @@
       "mcp__visualize__show_widget",
       "PowerShell(python3 --version 2>&1)",
       "PowerShell(py --version 2>&1)",
-      "PowerShell(python --version 2>&1)"
+      "PowerShell(python --version 2>&1)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(npx prisma *)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\registrations\" 2>/dev/null; mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\registrations\\\\[id]\" 2>/dev/null; echo done)"
     ]
   }
 }

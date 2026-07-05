@@ -66,6 +66,16 @@ model Choice {
   answers  Answer[]
 }
 
+model RegistrationRequest {
+  id         String   @id @default(cuid())
+  phone      String   @unique
+  name       String
+  school     String
+  password   String
+  status     String   @default("pending") // pending | approved | rejected
+  createdAt  DateTime @default(now())
+}
+
 model ExamStudent {
   id     String @id @default(cuid())
   examId String
