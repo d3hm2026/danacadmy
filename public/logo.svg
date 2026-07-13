@@ -1,4 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <rect width="200" height="200" rx="20" fill="#1a2e5a"/>
-  <text x="100" y="110" font-family="Arial" font-size="70" font-weight="bold" fill="#c4a052" text-anchor="middle">DA</text>
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dan Academy Logo">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3566;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a2e5a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4b565;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c4a052;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Shield shape -->
+  <path d="M100 10 L182 44 L182 116 Q182 162 100 190 Q18 162 18 116 L18 44 Z"
+        fill="url(#shieldGrad)" />
+
+  <!-- Inner shield border in gold -->
+  <path d="M100 22 L172 53 L172 116 Q172 156 100 180 Q28 156 28 116 L28 53 Z"
+        fill="none" stroke="url(#goldGrad)" stroke-width="2" opacity="0.6"/>
+
+  <!-- DA letters -->
+  <text x="56" y="118" font-family="Georgia, serif" font-size="66"
+        font-weight="bold" fill="url(#goldGrad)">D</text>
+  <text x="106" y="118" font-family="Georgia, serif" font-size="66"
+        font-weight="bold" fill="url(#goldGrad)">A</text>
+
+  <!-- Open book icon -->
+  <g transform="translate(100,152)">
+    <path d="M-26,-9 Q-26,-17 -18,-17 L-4,-15 L-4,13 Q-12,11 -18,11 Q-26,11 -26,3 Z"
+          fill="url(#goldGrad)" opacity="0.92"/>
+    <path d="M26,-9 Q26,-17 18,-17 L4,-15 L4,13 Q12,11 18,11 Q26,11 26,3 Z"
+          fill="url(#goldGrad)" opacity="0.92"/>
+    <rect x="-2.5" y="-16" width="5" height="30" rx="2.5" fill="#c4a052"/>
+  </g>
+
+  <!-- Arabic text below shield -->
+  <text x="100" y="198" font-family="'Segoe UI', Tahoma, Arial, sans-serif" font-size="13"
+        font-weight="bold" fill="#1a2e5a" text-anchor="middle">أكاديمية دان</text>
 </svg>

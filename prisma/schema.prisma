@@ -15,11 +15,16 @@ model User {
   role      String   @default("student")
   createdAt DateTime @default(now())
 
-  sessions     ExamSession[]
-  exams        ExamStudent[]
-  progress     LessonProgress[]
-  quizAttempts QuizAttempt[]
-  enrollments  Enrollment[]
+  sessions      ExamSession[]
+  exams         ExamStudent[]
+  progress      LessonProgress[]
+  quizAttempts  QuizAttempt[]
+  enrollments   Enrollment[]
+  notifications Notification[]
+  comments      LessonComment[]
+  ratings       CourseRating[]
+  points        UserPoints?
+  badges        Badge[]
 }
 
 model Course {
@@ -32,6 +37,7 @@ model Course {
   updatedAt   DateTime @updatedAt
   units       Unit[]
   enrollments Enrollment[]
+  ratings     CourseRating[]
 }
 
 model Unit {
@@ -58,6 +64,7 @@ model Lesson {
   isRequired  Boolean  @default(true)
   unit        Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
   progress    LessonProgress[]
+  comments    LessonComment[]
 }
 
 model LessonProgress {
@@ -228,4 +235,53 @@ model Answer {
   section  Section     @relation(fields: [sectionId], references: [id])
 
   @@unique([sessionId, questionId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  type      String   @default("info") // info | success | warning
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LessonComment {
+  id        String   @id @default(cuid())
+  lessonId  String
+  userId    String
+  text      String
+  createdAt DateTime @default(now())
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CourseRating {
+  id        String   @id @default(cuid())
+  courseId  String
+  userId    String
+  rating    Int      // 1-5
+  review    String?
+  createdAt DateTime @default(now())
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([courseId, userId])
+}
+
+model UserPoints {
+  id     String @id @default(cuid())
+  userId String @unique
+  total  Int    @default(0)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Badge {
+  id       String   @id @default(cuid())
+  userId   String
+  type     String   // first_lesson | first_course | quiz_pass | perfect_score | speed_learner
+  courseId String?
+  earnedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -12,8 +12,32 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const enrollment = await prisma.enrollment.update({
     where: { id: enrollmentId },
     data: { status },
-    include: { user: { select: { name: true, phone: true } } },
+    include: {
+      user: { select: { name: true, phone: true } },
+      course: { select: { title: true } },
+    },
   });
+
+  // Send notification to user
+  if (status === "approved") {
+    await prisma.notification.create({
+      data: {
+        userId: enrollment.userId,
+        title: "تم قبول انتسابك",
+        body: `تم قبول طلب انتسابك في دورة ${enrollment.course.title}. يمكنك البدء الآن.`,
+        type: "success",
+      },
+    });
+  } else if (status === "rejected") {
+    await prisma.notification.create({
+      data: {
+        userId: enrollment.userId,
+        title: "بشأن طلب انتسابك",
+        body: `نعتذر، تم رفض طلب انتسابك في دورة ${enrollment.course.title}.`,
+        type: "warning",
+      },
+    });
+  }
 
   return NextResponse.json(enrollment);
 }

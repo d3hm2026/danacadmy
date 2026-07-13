@@ -32,6 +32,7 @@ export default function LessonEditPage({
   const [title, setTitle] = useState("");
   const [type, setType] = useState("video");
   const [videoUrl, setVideoUrl] = useState("");
+  const [videoTab, setVideoTab] = useState<"youtube" | "direct">("youtube");
   const [fileUrl, setFileUrl] = useState("");
   const [fileTitle, setFileTitle] = useState("");
   const [textContent, setTextContent] = useState("");
@@ -131,15 +132,52 @@ export default function LessonEditPage({
         {/* Video fields */}
         {type === "video" && (
           <div className="space-y-4">
+            {/* Video source tabs */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">رابط الفيديو</label>
-              <input
-                value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
-                placeholder="https://youtube.com/watch?v=... أو رابط مباشر للفيديو"
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2e5a]"
-              />
-              <p className="text-xs text-gray-400 mt-1">يدعم روابط YouTube ورابط الفيديو المباشر (.mp4)</p>
+              <label className="block text-sm font-medium text-gray-700 mb-2">مصدر الفيديو</label>
+              <div className="flex gap-2 mb-3">
+                <button
+                  onClick={() => setVideoTab("youtube")}
+                  className={`flex-1 py-2 rounded-xl text-sm font-medium border transition-colors ${
+                    videoTab === "youtube"
+                      ? "bg-red-600 text-white border-red-600"
+                      : "border-gray-200 text-gray-600 hover:border-red-400"
+                  }`}
+                >
+                  ▶ يوتيوب
+                </button>
+                <button
+                  onClick={() => setVideoTab("direct")}
+                  className={`flex-1 py-2 rounded-xl text-sm font-medium border transition-colors ${
+                    videoTab === "direct"
+                      ? "bg-[#1a2e5a] text-white border-[#1a2e5a]"
+                      : "border-gray-200 text-gray-600 hover:border-[#1a2e5a]"
+                  }`}
+                >
+                  🔗 رابط مباشر
+                </button>
+              </div>
+              {videoTab === "youtube" ? (
+                <div>
+                  <input
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
+                    placeholder="https://www.youtube.com/watch?v=XXXXXXXXXXX"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2e5a]"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">الصق رابط فيديو YouTube هنا</p>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
+                    placeholder="https://example.com/video.mp4"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2e5a]"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">رابط مباشر لملف الفيديو (.mp4 أو .webm)</p>
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">المدة (بالدقائق)</label>
@@ -158,14 +196,25 @@ export default function LessonEditPage({
         {/* PDF fields */}
         {type === "pdf" && (
           <div className="space-y-4">
+            {/* PDF upload instructions */}
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-800">
+              <p className="font-semibold mb-2">📤 كيفية إضافة ملف PDF:</p>
+              <ol className="list-decimal list-inside space-y-1 text-xs leading-relaxed">
+                <li>ارفع ملفك على <strong>Google Drive</strong> أو <strong>Dropbox</strong></li>
+                <li>للـ Google Drive: اضغط على الملف ← مشاركة ← أي شخص لديه الرابط ← نسخ الرابط</li>
+                <li>للـ Dropbox: افتح الملف ← مشاركة ← إنشاء رابط ← نسخ</li>
+                <li>الصق الرابط في الحقل أدناه</li>
+              </ol>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">رابط الملف (PDF)</label>
               <input
                 value={fileUrl}
                 onChange={(e) => setFileUrl(e.target.value)}
-                placeholder="https://..."
+                placeholder="https://drive.google.com/... أو https://dropbox.com/..."
                 className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2e5a]"
               />
+              <p className="text-xs text-gray-400 mt-1">ارفع ملفك على Google Drive أو Dropbox وضع الرابط المباشر هنا</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">اسم الملف</label>

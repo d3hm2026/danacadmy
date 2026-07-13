@@ -1,0 +1,29 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dan Academy Logo">
+  <!-- Shield shape in white -->
+  <path d="M100 10 L182 44 L182 116 Q182 162 100 190 Q18 162 18 116 L18 44 Z"
+        fill="white" />
+
+  <!-- Inner shield border -->
+  <path d="M100 22 L172 53 L172 116 Q172 156 100 180 Q28 156 28 116 L28 53 Z"
+        fill="none" stroke="white" stroke-width="2" opacity="0.5"/>
+
+  <!-- DA letters in white (on transparent/dark bg they show via fill) -->
+  <!-- Use a slightly off-white for depth against the white shield -->
+  <text x="56" y="118" font-family="Georgia, serif" font-size="66"
+        font-weight="bold" fill="#e8e0cc">D</text>
+  <text x="106" y="118" font-family="Georgia, serif" font-size="66"
+        font-weight="bold" fill="#e8e0cc">A</text>
+
+  <!-- Open book icon -->
+  <g transform="translate(100,152)">
+    <path d="M-26,-9 Q-26,-17 -18,-17 L-4,-15 L-4,13 Q-12,11 -18,11 Q-26,11 -26,3 Z"
+          fill="white" opacity="0.85"/>
+    <path d="M26,-9 Q26,-17 18,-17 L4,-15 L4,13 Q12,11 18,11 Q26,11 26,3 Z"
+          fill="white" opacity="0.85"/>
+    <rect x="-2.5" y="-16" width="5" height="30" rx="2.5" fill="white"/>
+  </g>
+
+  <!-- Arabic text -->
+  <text x="100" y="198" font-family="'Segoe UI', Tahoma, Arial, sans-serif" font-size="13"
+        font-weight="bold" fill="white" text-anchor="middle">أكاديمية دان</text>
+</svg>

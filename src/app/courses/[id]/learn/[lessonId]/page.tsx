@@ -4,6 +4,13 @@ import { useEffect, useRef, useState, useCallback, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+type Comment = {
+  id: string;
+  text: string;
+  createdAt: string;
+  user: { name: string | null; phone: string };
+};
+
 type LessonProgress = { completed: boolean; watchedSeconds: number };
 type Lesson = {
   id: string;
@@ -376,8 +383,85 @@ export default function LearnPage({
               </button>
             </div>
           </div>
+
+          {/* Comments section */}
+          <div className="bg-gray-50 border-t border-gray-700">
+            <CommentsSection lessonId={lessonId} />
+          </div>
         </main>
       </div>
+    </div>
+  );
+}
+
+// Comments section
+function CommentsSection({ lessonId }: { lessonId: string }) {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [text, setText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetch(`/api/lessons/${lessonId}/comments`)
+      .then((r) => r.json())
+      .then((d) => { if (Array.isArray(d)) setComments(d); });
+  }, [lessonId]);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!text.trim()) return;
+    setSubmitting(true);
+    const res = await fetch(`/api/lessons/${lessonId}/comments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    if (res.ok) {
+      const newComment = await res.json();
+      setComments((prev) => [...prev, newComment]);
+      setText("");
+    }
+    setSubmitting(false);
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto p-6" dir="rtl">
+      <h3 className="font-bold text-gray-800 mb-4 text-lg">الأسئلة والتعليقات</h3>
+
+      {/* Comment list */}
+      <div className="space-y-3 mb-6">
+        {comments.length === 0 && (
+          <p className="text-gray-400 text-sm text-center py-4">لا توجد تعليقات بعد. كن أول من يعلّق!</p>
+        )}
+        {comments.map((c) => (
+          <div key={c.id} className="bg-white rounded-xl p-4 border border-gray-100">
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-medium text-gray-900 text-sm">{c.user.name || c.user.phone}</span>
+              <span className="text-xs text-gray-400">
+                {new Date(c.createdAt).toLocaleDateString("ar-SA")}
+              </span>
+            </div>
+            <p className="text-gray-700 text-sm leading-relaxed">{c.text}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Add comment */}
+      <form onSubmit={submit} className="space-y-3">
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="اكتب سؤالك أو تعليقك..."
+          className="w-full border border-gray-200 rounded-xl p-3 text-sm resize-none outline-none focus:border-[#1a2e5a] bg-white"
+          rows={3}
+        />
+        <button
+          type="submit"
+          disabled={submitting || !text.trim()}
+          className="bg-[#1a2e5a] text-white px-6 py-2.5 rounded-xl text-sm font-medium disabled:opacity-50"
+        >
+          {submitting ? "جارٍ الإرسال..." : "إرسال التعليق"}
+        </button>
+      </form>
     </div>
   );
 }

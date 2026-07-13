@@ -18,8 +18,21 @@ export async function GET() {
         where: { userId: session.user.id },
         select: { id: true },
       },
+      ratings: {
+        select: { rating: true },
+      },
     },
   });
 
-  return NextResponse.json(courses);
+  const coursesWithRatings = courses.map((c) => {
+    const ratings = c.ratings;
+    const avgRating = ratings.length > 0
+      ? ratings.reduce((s, r) => s + r.rating, 0) / ratings.length
+      : 0;
+    const { ratings: _r, ...rest } = c;
+    void _r;
+    return { ...rest, avgRating, ratingCount: ratings.length };
+  });
+
+  return NextResponse.json(coursesWithRatings);
 }

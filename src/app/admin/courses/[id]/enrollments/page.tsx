@@ -22,6 +22,13 @@ export default function CourseEnrollmentsPage({ params }: { params: Promise<{ id
   const [filter, setFilter] = useState("pending");
   const [actionId, setActionId] = useState<string | null>(null);
 
+  // Notify modal state
+  const [showNotify, setShowNotify] = useState(false);
+  const [notifyTitle, setNotifyTitle] = useState("");
+  const [notifyBody, setNotifyBody] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sentMsg, setSentMsg] = useState("");
+
   async function load() {
     setLoading(true);
     const res = await fetch(`/api/admin/courses/${id}/enrollments`);
@@ -50,6 +57,22 @@ export default function CourseEnrollmentsPage({ params }: { params: Promise<{ id
     setActionId(null);
   }
 
+  async function sendNotification() {
+    if (!notifyTitle.trim() || !notifyBody.trim()) return;
+    setSending(true);
+    const res = await fetch(`/api/admin/courses/${id}/notify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: notifyTitle, body: notifyBody }),
+    });
+    const data = await res.json();
+    setSentMsg(`تم إرسال الإشعار إلى ${data.sent} طالب`);
+    setSending(false);
+    setNotifyTitle("");
+    setNotifyBody("");
+    setTimeout(() => { setShowNotify(false); setSentMsg(""); }, 2000);
+  }
+
   const filtered = enrollments.filter((e) => e.status === filter);
   const counts = {
     pending:  enrollments.filter((e) => e.status === "pending").length,
@@ -67,13 +90,21 @@ export default function CourseEnrollmentsPage({ params }: { params: Promise<{ id
         <Link href={`/admin/courses/${id}/stats`} className="text-sm text-gray-500 hover:text-gray-700">الإحصائيات</Link>
       </div>
 
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <h1 className="text-xl font-bold text-gray-900">طلبات الانتساب بالدورة</h1>
-        {counts.pending > 0 && (
-          <span className="bg-yellow-100 text-yellow-700 text-sm font-semibold px-4 py-1.5 rounded-xl">
-            {counts.pending} طلب بانتظار الموافقة
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {counts.pending > 0 && (
+            <span className="bg-yellow-100 text-yellow-700 text-sm font-semibold px-4 py-1.5 rounded-xl">
+              {counts.pending} طلب بانتظار الموافقة
+            </span>
+          )}
+          <button
+            onClick={() => setShowNotify(true)}
+            className="bg-[#1a2e5a] text-white text-sm px-4 py-2 rounded-xl hover:bg-[#22397a] flex items-center gap-2"
+          >
+            🔔 إرسال إشعار للطلاب
+          </button>
+        </div>
       </div>
 
       {/* Filter tabs */}
@@ -147,6 +178,62 @@ export default function CourseEnrollmentsPage({ params }: { params: Promise<{ id
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Notify Modal */}
+      {showNotify && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md" dir="rtl">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="font-bold text-gray-900 text-lg">إرسال إشعار للطلاب المقبولين</h2>
+              <button onClick={() => { setShowNotify(false); setSentMsg(""); }} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+            </div>
+
+            {sentMsg ? (
+              <div className="text-center py-6">
+                <div className="text-4xl mb-3">✅</div>
+                <p className="text-green-600 font-medium">{sentMsg}</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">عنوان الإشعار</label>
+                  <input
+                    type="text"
+                    value={notifyTitle}
+                    onChange={(e) => setNotifyTitle(e.target.value)}
+                    placeholder="مثال: تحديث جديد في الدورة"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1a2e5a]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">نص الإشعار</label>
+                  <textarea
+                    value={notifyBody}
+                    onChange={(e) => setNotifyBody(e.target.value)}
+                    placeholder="اكتب رسالتك هنا..."
+                    rows={3}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#1a2e5a] resize-none"
+                  />
+                </div>
+                <p className="text-xs text-gray-400">سيُرسل الإشعار إلى {counts.approved} طالب مقبول</p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={sendNotification}
+                    disabled={sending || !notifyTitle.trim() || !notifyBody.trim()}
+                    className="flex-1 bg-[#1a2e5a] text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50"
+                  >
+                    {sending ? "جارٍ الإرسال..." : "إرسال"}
+                  </button>
+                  <button onClick={() => setShowNotify(false)}
+                    className="px-5 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50">
+                    إلغاء
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
