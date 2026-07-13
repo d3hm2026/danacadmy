@@ -11,10 +11,14 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   const course = await prisma.course.findUnique({ where: { id: courseId, isPublished: true } });
   if (!course) return NextResponse.json({ error: "Course not found" }, { status: 404 });
 
-  const enrollment = await prisma.enrollment.upsert({
+  const existing = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: session.user.id, courseId } },
-    update: {},
-    create: { userId: session.user.id, courseId },
+  });
+
+  if (existing) return NextResponse.json(existing);
+
+  const enrollment = await prisma.enrollment.create({
+    data: { userId: session.user.id, courseId, status: "pending" },
   });
 
   return NextResponse.json(enrollment, { status: 201 });

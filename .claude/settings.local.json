@@ -30,7 +30,12 @@
       "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\quiz\\\\[quizId]\\\\attempt\")",
       "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\quiz\\\\[quizId]\\\\attempts\")",
       "Bash(npx tsc *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\courses\\\\[id]\\\\enrollments\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\courses\\\\[id]\\\\enrollments\\\\[enrollmentId]\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\courses\\\\[id]\\\\stats\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\admin\\\\courses\\\\[id]\\\\enrollments\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\admin\\\\courses\\\\[id]\\\\stats\")"
     ]
   }
 }

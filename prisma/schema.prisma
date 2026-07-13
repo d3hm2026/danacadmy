@@ -114,6 +114,7 @@ model Enrollment {
   id         String   @id @default(cuid())
   userId     String
   courseId   String
+  status     String   @default("pending") // pending | approved | rejected
   enrolledAt DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)

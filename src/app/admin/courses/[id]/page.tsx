@@ -133,11 +133,23 @@ export default function CourseManagePage({ params }: { params: Promise<{ id: str
 
   return (
     <div dir="rtl" className="max-w-3xl mx-auto space-y-6">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-500">
-        <Link href="/admin/courses" className="hover:text-[#1a2e5a]">الدورات</Link>
-        <span>/</span>
-        <span className="text-gray-800 font-medium truncate">{course.title}</span>
+      {/* Breadcrumb + quick links */}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/admin/courses" className="hover:text-[#1a2e5a]">الدورات</Link>
+          <span>/</span>
+          <span className="text-gray-800 font-medium truncate">{course.title}</span>
+        </div>
+        <div className="flex gap-2">
+          <Link href={`/admin/courses/${id}/enrollments`}
+            className="text-sm bg-yellow-50 hover:bg-yellow-100 text-yellow-700 px-4 py-1.5 rounded-xl font-medium transition-colors">
+            👥 طلبات الانتساب
+          </Link>
+          <Link href={`/admin/courses/${id}/stats`}
+            className="text-sm bg-blue-50 hover:bg-blue-100 text-[#1a2e5a] px-4 py-1.5 rounded-xl font-medium transition-colors">
+            📊 الإحصائيات
+          </Link>
+        </div>
       </div>
 
       {/* Course Info Card */}

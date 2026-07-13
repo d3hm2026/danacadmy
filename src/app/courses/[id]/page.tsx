@@ -8,12 +8,13 @@ type Progress = { completed: boolean; watchedSeconds: number };
 type Lesson = { id: string; title: string; type: string; order: number; isRequired: boolean; progress: Progress[] };
 type Quiz = { id: string; title: string; passingScore: number };
 type Unit = { id: string; title: string; order: number; lessons: Lesson[]; quiz: Quiz | null };
+type Enrollment = { id: string; status: string };
 type Course = {
   id: string;
   title: string;
   description: string | null;
   units: Unit[];
-  enrollments: { id: string }[];
+  enrollments: Enrollment[];
 };
 
 export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -29,7 +30,6 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
     if (!res.ok) { router.push("/courses"); return; }
     const data = await res.json();
     setCourse(data);
-    // auto-expand all units
     setExpandedUnits(new Set(data.units.map((u: Unit) => u.id)));
     setLoading(false);
   };
@@ -46,24 +46,24 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
   const getNextLesson = async () => {
     const res = await fetch(`/api/courses/${id}/next-lesson`);
     const data = await res.json();
-    if (data.lessonId) {
-      router.push(`/courses/${id}/learn/${data.lessonId}`);
-    }
+    if (data.lessonId) router.push(`/courses/${id}/learn/${data.lessonId}`);
   };
 
   if (loading) return <div dir="rtl" className="min-h-screen flex items-center justify-center text-gray-400">جارٍ التحميل...</div>;
   if (!course) return null;
 
-  const enrolled = course.enrollments.length > 0;
+  const enrollment = course.enrollments[0] ?? null;
+  const enrollStatus = enrollment?.status ?? null;
+  const isApproved = enrollStatus === "approved";
   const sortedUnits = [...course.units].sort((a, b) => a.order - b.order);
 
   const unitProgress = (unit: Unit) => {
-    const lessons = unit.lessons;
-    const done = lessons.filter((l) => l.progress[0]?.completed).length;
-    return { done, total: lessons.length };
+    const done = unit.lessons.filter((l) => l.progress[0]?.completed).length;
+    return { done, total: unit.lessons.length };
   };
 
   const lessonIcon = (lesson: Lesson) => {
+    if (!isApproved) return "🔒";
     if (lesson.progress[0]?.completed) return "✅";
     if (lesson.type === "video") return "🎬";
     if (lesson.type === "pdf") return "📄";
@@ -75,9 +75,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
       {/* Hero */}
       <div className="bg-gradient-to-br from-[#1a2e5a] to-[#2d4a8a] text-white py-12">
         <div className="max-w-4xl mx-auto px-4">
-          <Link href="/courses" className="text-white/60 text-sm hover:text-white mb-4 inline-block">
-            ← الدورات
-          </Link>
+          <Link href="/courses" className="text-white/60 text-sm hover:text-white mb-4 inline-block">← الدورات</Link>
           <h1 className="text-3xl font-bold mb-3">{course.title}</h1>
           {course.description && <p className="text-white/80 text-lg">{course.description}</p>}
           <div className="mt-6 flex gap-4 text-sm text-white/70">
@@ -86,29 +84,62 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           <div className="mt-6">
-            {enrolled ? (
-              <button
-                onClick={getNextLesson}
-                className="bg-[#c4a052] hover:bg-[#b38e3f] text-white px-8 py-3 rounded-xl font-bold text-lg"
-              >
-                متابعة التعلم ←
+            {/* Not enrolled yet */}
+            {!enrollStatus && (
+              <button onClick={enroll} disabled={enrolling}
+                className="bg-white text-[#1a2e5a] hover:bg-gray-100 px-8 py-3 rounded-xl font-bold text-lg disabled:opacity-50">
+                {enrolling ? "جارٍ الإرسال..." : "طلب الانتساب للدورة"}
               </button>
-            ) : (
-              <button
-                onClick={enroll}
-                disabled={enrolling}
-                className="bg-white text-[#1a2e5a] hover:bg-gray-100 px-8 py-3 rounded-xl font-bold text-lg disabled:opacity-50"
-              >
-                {enrolling ? "جارٍ التسجيل..." : "التسجيل في الدورة"}
+            )}
+
+            {/* Pending */}
+            {enrollStatus === "pending" && (
+              <div className="inline-flex items-center gap-3 bg-yellow-400/20 border border-yellow-300/40 px-6 py-3 rounded-xl">
+                <span className="text-xl">⏳</span>
+                <div>
+                  <p className="font-bold text-white">طلبك قيد المراجعة</p>
+                  <p className="text-white/70 text-sm">سيتم تفعيل حسابك بعد موافقة المسؤول</p>
+                </div>
+              </div>
+            )}
+
+            {/* Rejected */}
+            {enrollStatus === "rejected" && (
+              <div className="inline-flex items-center gap-3 bg-red-400/20 border border-red-300/40 px-6 py-3 rounded-xl">
+                <span className="text-xl">❌</span>
+                <div>
+                  <p className="font-bold text-white">تم رفض طلبك</p>
+                  <p className="text-white/70 text-sm">يرجى التواصل مع الإدارة لمزيد من المعلومات</p>
+                </div>
+              </div>
+            )}
+
+            {/* Approved */}
+            {enrollStatus === "approved" && (
+              <button onClick={getNextLesson}
+                className="bg-[#c4a052] hover:bg-[#b38e3f] text-white px-8 py-3 rounded-xl font-bold text-lg">
+                متابعة التعلم ←
               </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Content */}
+      {/* Course Content */}
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-4">
         <h2 className="text-xl font-bold text-[#1a2e5a]">محتوى الدورة</h2>
+
+        {/* Locked banner for non-approved */}
+        {!isApproved && enrollStatus !== null && (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center text-amber-700 text-sm font-medium">
+            🔒 محتوى الدورة متاح فقط بعد موافقة المسؤول على طلب انتسابك
+          </div>
+        )}
+        {!enrollStatus && (
+          <div className="bg-gray-100 border border-gray-200 rounded-2xl p-4 text-center text-gray-500 text-sm">
+            🔒 سجّل في الدورة للوصول إلى المحتوى
+          </div>
+        )}
 
         {sortedUnits.map((unit, idx) => {
           const { done, total } = unitProgress(unit);
@@ -134,7 +165,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  {enrolled && total > 0 && (
+                  {isApproved && total > 0 && (
                     <div className="flex items-center gap-2">
                       <div className="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                         <div className="h-full bg-[#c4a052] rounded-full" style={{ width: `${(done / total) * 100}%` }} />
@@ -149,21 +180,20 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
               {isExpanded && (
                 <div className="border-t border-gray-50 divide-y divide-gray-50">
                   {[...unit.lessons].sort((a, b) => a.order - b.order).map((lesson) => {
-                    const isDone = lesson.progress[0]?.completed;
+                    const isDone = isApproved && lesson.progress[0]?.completed;
                     return (
-                      <div key={lesson.id} className={`flex items-center gap-3 px-4 py-3 ${enrolled ? "hover:bg-gray-50" : ""}`}>
+                      <div key={lesson.id}
+                        className={`flex items-center gap-3 px-4 py-3 ${isApproved ? "hover:bg-gray-50" : "opacity-60"}`}>
                         <span className="text-lg w-6 text-center">{lessonIcon(lesson)}</span>
-                        <span className={`flex-1 text-sm ${isDone ? "text-gray-500 line-through" : "text-gray-800"}`}>
+                        <span className={`flex-1 text-sm ${isDone ? "text-gray-400 line-through" : "text-gray-800"}`}>
                           {lesson.title}
                         </span>
                         <span className="text-xs text-gray-400">
                           {lesson.type === "video" ? "فيديو" : lesson.type === "pdf" ? "PDF" : "نص"}
                         </span>
-                        {enrolled && (
-                          <Link
-                            href={`/courses/${id}/learn/${lesson.id}`}
-                            className="text-xs text-[#1a2e5a] hover:underline"
-                          >
+                        {isApproved && (
+                          <Link href={`/courses/${id}/learn/${lesson.id}`}
+                            className="text-xs text-[#1a2e5a] font-medium hover:underline">
                             {isDone ? "إعادة" : "بدء"}
                           </Link>
                         )}
@@ -171,14 +201,11 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                     );
                   })}
                   {unit.quiz && (
-                    <div className="flex items-center gap-3 px-4 py-3 bg-amber-50">
-                      <span className="text-lg">📝</span>
+                    <div className={`flex items-center gap-3 px-4 py-3 ${isApproved ? "bg-amber-50" : "bg-gray-50 opacity-60"}`}>
+                      <span className="text-lg">{isApproved ? "📝" : "🔒"}</span>
                       <span className="flex-1 text-sm text-amber-800 font-medium">{unit.quiz.title}</span>
-                      {enrolled && (
-                        <Link
-                          href={`/courses/${id}/quiz/${unit.quiz.id}`}
-                          className="text-xs text-amber-700 hover:underline"
-                        >
+                      {isApproved && (
+                        <Link href={`/courses/${id}/quiz/${unit.quiz.id}`} className="text-xs text-amber-700 hover:underline">
                           بدء الاختبار
                         </Link>
                       )}
