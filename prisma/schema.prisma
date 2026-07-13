@@ -15,8 +15,109 @@ model User {
   role      String   @default("student")
   createdAt DateTime @default(now())
 
-  sessions ExamSession[]
-  exams    ExamStudent[]
+  sessions     ExamSession[]
+  exams        ExamStudent[]
+  progress     LessonProgress[]
+  quizAttempts QuizAttempt[]
+  enrollments  Enrollment[]
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  thumbnail   String?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  units       Unit[]
+  enrollments Enrollment[]
+}
+
+model Unit {
+  id       String   @id @default(cuid())
+  title    String
+  order    Int
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons  Lesson[]
+  quiz     Quiz?
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  order       Int
+  unitId      String
+  type        String   @default("video")
+  videoUrl    String?
+  fileUrl     String?
+  fileTitle   String?
+  textContent String?
+  duration    Int?
+  isRequired  Boolean  @default(true)
+  unit        Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  progress    LessonProgress[]
+}
+
+model LessonProgress {
+  id             String    @id @default(cuid())
+  userId         String
+  lessonId       String
+  watchedSeconds Int       @default(0)
+  completed      Boolean   @default(false)
+  completedAt    DateTime?
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson         Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  @@unique([userId, lessonId])
+}
+
+model Quiz {
+  id           String        @id @default(cuid())
+  unitId       String        @unique
+  title        String
+  passingScore Float         @default(70)
+  unit         Unit          @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  questions    QuizQuestion[]
+  attempts     QuizAttempt[]
+}
+
+model QuizQuestion {
+  id      String       @id @default(cuid())
+  quizId  String
+  text    String
+  order   Int
+  quiz    Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  choices QuizChoice[]
+}
+
+model QuizChoice {
+  id         String       @id @default(cuid())
+  questionId String
+  text       String
+  isCorrect  Boolean      @default(false)
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model QuizAttempt {
+  id          String   @id @default(cuid())
+  userId      String
+  quizId      String
+  score       Float
+  passed      Boolean
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id         String   @id @default(cuid())
+  userId     String
+  courseId   String
+  enrolledAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  @@unique([userId, courseId])
 }
 
 model Exam {

@@ -28,6 +28,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               <Link href="/admin/students" className="px-3 py-1.5 text-sm rounded-lg hover:bg-gray-100 text-gray-700">
                 الطلاب
               </Link>
+              <Link href="/admin/courses" className="px-3 py-1.5 text-sm rounded-lg hover:bg-gray-100 text-gray-700">
+                الدورات
+              </Link>
               <Link href="/admin/registrations" className="relative px-3 py-1.5 text-sm rounded-lg hover:bg-gray-100 text-gray-700">
                 طلبات التسجيل
                 {pendingCount > 0 && (

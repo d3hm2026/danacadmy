@@ -13,7 +13,24 @@
       "Bash(npx prisma *)",
       "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\registrations\" 2>/dev/null; mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\registrations\\\\[id]\" 2>/dev/null; echo done)",
       "Bash(git config *)",
-      "Bash(npx vercel *)"
+      "Bash(npx vercel *)",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\courses\\\\[id]\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\courses\\\\[id]\\\\units\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\units\\\\[unitId]\\\\lessons\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\units\\\\[unitId]\\\\quiz\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\lessons\\\\[lessonId]\")",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\courses\\\\[id]\\\\units\")",
+      "Bash(Out-Null)",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\units\\\\[unitId]\\\\lessons\")",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\units\\\\[unitId]\\\\quiz\")",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\lessons\\\\[lessonId]\")",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\courses\\\\[id]\\\\enroll\")",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\courses\\\\[id]\\\\next-lesson\")",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\lessons\\\\[lessonId]\\\\progress\")",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\quiz\\\\[quizId]\\\\attempt\")",
+      "Bash(New-Item -ItemType Directory -Force -Path \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\quiz\\\\[quizId]\\\\attempts\")",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)"
     ]
   }
 }
