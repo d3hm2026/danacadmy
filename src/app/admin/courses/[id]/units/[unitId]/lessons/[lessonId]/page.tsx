@@ -32,7 +32,9 @@ export default function LessonEditPage({
   const [title, setTitle] = useState("");
   const [type, setType] = useState("video");
   const [videoUrl, setVideoUrl] = useState("");
-  const [videoTab, setVideoTab] = useState<"youtube" | "direct">("youtube");
+  const [videoTab, setVideoTab] = useState<"youtube" | "direct" | "upload">("youtube");
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [fileUrl, setFileUrl] = useState("");
   const [fileTitle, setFileTitle] = useState("");
   const [textContent, setTextContent] = useState("");
@@ -156,6 +158,16 @@ export default function LessonEditPage({
                 >
                   🔗 رابط مباشر
                 </button>
+                <button
+                  onClick={() => setVideoTab("upload")}
+                  className={`flex-1 py-2 rounded-xl text-sm font-medium border transition-colors ${
+                    videoTab === "upload"
+                      ? "bg-[#c4a052] text-white border-[#c4a052]"
+                      : "border-gray-200 text-gray-600 hover:border-[#c4a052]"
+                  }`}
+                >
+                  ☁️ رفع فيديو
+                </button>
               </div>
               {videoTab === "youtube" ? (
                 <div>
@@ -167,7 +179,7 @@ export default function LessonEditPage({
                   />
                   <p className="text-xs text-gray-400 mt-1">الصق رابط فيديو YouTube هنا</p>
                 </div>
-              ) : (
+              ) : videoTab === "direct" ? (
                 <div>
                   <input
                     value={videoUrl}
@@ -176,6 +188,56 @@ export default function LessonEditPage({
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2e5a]"
                   />
                   <p className="text-xs text-gray-400 mt-1">رابط مباشر لملف الفيديو (.mp4 أو .webm)</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {videoUrl && videoTab === "upload" && (
+                    <div className="bg-green-50 border border-green-100 rounded-xl p-3 text-sm text-green-700">
+                      ✅ تم رفع الفيديو: <a href={videoUrl} target="_blank" rel="noopener noreferrer" className="underline break-all">{videoUrl}</a>
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-sm text-gray-600 mb-1">اختر ملف الفيديو (حتى 500 ميجابايت)</label>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      disabled={uploading}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setUploading(true);
+                        setUploadProgress(0);
+                        const form = new FormData();
+                        form.append("file", file);
+                        const xhr = new XMLHttpRequest();
+                        xhr.open("POST", "/api/upload/video");
+                        xhr.upload.onprogress = (ev) => {
+                          if (ev.lengthComputable) setUploadProgress(Math.round((ev.loaded / ev.total) * 100));
+                        };
+                        xhr.onload = () => {
+                          setUploading(false);
+                          if (xhr.status === 200) {
+                            const data = JSON.parse(xhr.responseText);
+                            setVideoUrl(data.url);
+                          }
+                        };
+                        xhr.onerror = () => setUploading(false);
+                        xhr.send(form);
+                      }}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#c4a052] disabled:opacity-50"
+                    />
+                  </div>
+                  {uploading && (
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>جارٍ الرفع...</span>
+                        <span>{uploadProgress}%</span>
+                      </div>
+                      <div className="w-full bg-gray-100 rounded-full h-2">
+                        <div className="bg-[#c4a052] h-2 rounded-full transition-all" style={{ width: `${uploadProgress}%` }} />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

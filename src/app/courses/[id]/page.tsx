@@ -158,6 +158,19 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
             <span>🎬 {sortedUnits.reduce((s, u) => s + u.lessons.length, 0)} درس</span>
           </div>
 
+          {isApproved && (
+            <div className="flex gap-3 mt-4">
+              <Link href={`/courses/${id}/assignments`}
+                className="bg-white/10 border border-white/20 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-1.5">
+                📝 الواجبات
+              </Link>
+              <Link href={`/courses/${id}/live`}
+                className="bg-white/10 border border-white/20 hover:bg-white/20 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-1.5">
+                🔴 الجلسات المباشرة
+              </Link>
+            </div>
+          )}
+
           <div className="mt-6 flex flex-wrap gap-3">
             {/* Not enrolled yet */}
             {!enrollStatus && (

@@ -141,6 +141,14 @@ export default function InstructorCourseManagePage({ params }: { params: Promise
             className="text-sm bg-blue-50 hover:bg-blue-100 text-[#1a2e5a] px-4 py-1.5 rounded-xl font-medium transition-colors">
             📊 الإحصائيات
           </Link>
+          <Link href={`/instructor/courses/${id}/assignments`}
+            className="text-sm bg-amber-50 hover:bg-amber-100 text-amber-700 px-4 py-1.5 rounded-xl font-medium transition-colors">
+            📝 الواجبات
+          </Link>
+          <Link href={`/instructor/courses/${id}/live`}
+            className="text-sm bg-green-50 hover:bg-green-100 text-green-700 px-4 py-1.5 rounded-xl font-medium transition-colors">
+            🔴 مباشر
+          </Link>
         </div>
       </div>
 

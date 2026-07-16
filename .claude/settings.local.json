@@ -43,7 +43,8 @@
       "Bash(mkdir -p \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/courses/[id]/certificate\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/search\" 2>&1 && echo done)",
       "PowerShell($ts = Get-Date -Format \"yyyyMMddHHmmss\"; $dir = \"C:/Users/Abdulrahman/Desktop/danacadmy/prisma/migrations/${ts}_add_notifications_comments_ratings_points_badges\"; New-Item -ItemType Directory -Force -Path $dir | Out-Null; Write-Output $dir)",
       "Bash(xargs grep -l 'session\\\\?\\\\.user\\\\?\\\\.role !== \"admin\"')",
-      "Bash(xargs sed -i 's/session\\\\?\\\\.user\\\\?\\\\.role !== \"admin\"/![\"owner\",\"admin\"].includes\\(session?.user?.role ?? \"\"\\)/g')"
+      "Bash(xargs sed -i 's/session\\\\?\\\\.user\\\\?\\\\.role !== \"admin\"/![\"owner\",\"admin\"].includes\\(session?.user?.role ?? \"\"\\)/g')",
+      "Bash(mkdir -p \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/courses/[id]/assignments/[assignmentId]/submit\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/courses/[id]/assignments/[assignmentId]/grade\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/courses/[id]/live-sessions/[sessionId]\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/calendar/[eventId]\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/upload/video\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/courses/[id]/assignments\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/courses/[id]/live\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/instructor/courses/[id]/assignments\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/instructor/courses/[id]/live\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/calendar\")"
     ]
   }
 }

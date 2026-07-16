@@ -15,17 +15,19 @@ model User {
   role      String   @default("student")
   createdAt DateTime @default(now())
 
-  sessions      ExamSession[]
-  exams         ExamStudent[]
-  progress      LessonProgress[]
-  quizAttempts  QuizAttempt[]
-  enrollments   Enrollment[]
-  notifications Notification[]
-  comments      LessonComment[]
-  ratings       CourseRating[]
-  points        UserPoints?
-  badges        Badge[]
-  taughtCourses Course[] @relation("InstructorCourses")
+  sessions               ExamSession[]
+  exams                  ExamStudent[]
+  progress               LessonProgress[]
+  quizAttempts           QuizAttempt[]
+  enrollments            Enrollment[]
+  notifications          Notification[]
+  comments               LessonComment[]
+  ratings                CourseRating[]
+  points                 UserPoints?
+  badges                 Badge[]
+  taughtCourses          Course[]              @relation("InstructorCourses")
+  assignmentSubmissions  AssignmentSubmission[]
+  createdEvents          CalendarEvent[]       @relation("CalendarCreator")
 }
 
 model Course {
@@ -41,6 +43,9 @@ model Course {
   units        Unit[]
   enrollments  Enrollment[]
   ratings      CourseRating[]
+  assignments  Assignment[]
+  liveSessions LiveSession[]
+  calendarEvents CalendarEvent[]
 }
 
 model Unit {
@@ -287,4 +292,60 @@ model Badge {
   courseId String?
   earnedAt DateTime @default(now())
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Assignment {
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  dueDate     DateTime?
+  maxScore    Int      @default(100)
+  createdAt   DateTime @default(now())
+  submissions AssignmentSubmission[]
+}
+
+model AssignmentSubmission {
+  id           String     @id @default(cuid())
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileUrl      String?
+  fileName     String?
+  comment      String?
+  score        Int?
+  feedback     String?
+  submittedAt  DateTime   @default(now())
+  gradedAt     DateTime?
+  @@unique([assignmentId, userId])
+}
+
+model LiveSession {
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  meetingUrl  String
+  scheduledAt DateTime
+  duration    Int      @default(60)
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model CalendarEvent {
+  id          String    @id @default(cuid())
+  courseId    String?
+  course      Course?   @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  eventType   String    @default("general")
+  startDate   DateTime
+  endDate     DateTime?
+  color       String?
+  createdBy   String
+  creator     User      @relation("CalendarCreator", fields: [createdBy], references: [id])
+  createdAt   DateTime  @default(now())
 }
