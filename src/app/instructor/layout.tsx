@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { SignOutButton } from "@/components/SignOutButton";
 
 export default async function InstructorLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -46,9 +47,7 @@ export default async function InstructorLayout({ children }: { children: React.R
               {roleLabel[session.user.role] ?? session.user.role}
             </span>
             <DarkModeToggle />
-            <form action="/api/auth/signout" method="POST">
-              <button className="text-sm text-gray-500 hover:text-gray-700">خروج</button>
-            </form>
+            <SignOutButton />
           </div>
         </div>
       </nav>
