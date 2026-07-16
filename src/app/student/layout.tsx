@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { DarkModeToggle } from "@/components/DarkModeToggle";
+import { SignOutButton } from "@/components/SignOutButton";
 
 type Notification = {
   id: string;
@@ -72,6 +73,7 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
         </Link>
 
         <div className="flex items-center gap-3">
+          <SignOutButton />
           <DarkModeToggle />
           {/* Calendar link */}
           <Link href="/calendar" className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors" title="التقويم">

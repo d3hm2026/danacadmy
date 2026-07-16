@@ -22,7 +22,8 @@ const BADGE_LABELS: Record<string, string> = {
 export default async function StudentPage() {
   const session = await auth();
   if (!session) redirect("/login");
-  if (session.user.role === "admin") redirect("/admin");
+  if (session.user.role === "admin" || session.user.role === "owner") redirect("/admin");
+  if (session.user.role === "instructor") redirect("/instructor");
 
   const [assignments, enrollments, userPoints, badges] = await Promise.all([
     prisma.examStudent.findMany({
