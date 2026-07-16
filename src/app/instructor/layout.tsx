@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 
 export default async function InstructorLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -44,6 +45,7 @@ export default async function InstructorLayout({ children }: { children: React.R
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleBadge[session.user.role] ?? "bg-gray-100 text-gray-600"}`}>
               {roleLabel[session.user.role] ?? session.user.role}
             </span>
+            <DarkModeToggle />
             <form action="/api/auth/signout" method="POST">
               <button className="text-sm text-gray-500 hover:text-gray-700">خروج</button>
             </form>

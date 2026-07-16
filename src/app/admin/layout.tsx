@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { DarkModeToggle } from "@/components/DarkModeToggle";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -54,6 +55,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                 {session.user.role === "owner" ? "صاحب المنصة" : "مشرف"}
               </span>
             </div>
+            <DarkModeToggle />
             <form action="/api/auth/signout" method="POST">
               <button className="text-sm text-gray-500 hover:text-gray-700">خروج</button>
             </form>
