@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ lessonId: string }> }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin") {
+  if (!session || !["owner","admin"].includes(session?.user?.role ?? "")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -31,7 +31,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ lesson
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ lessonId: string }> }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin") {
+  if (!session || !["owner","admin"].includes(session?.user?.role ?? "")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

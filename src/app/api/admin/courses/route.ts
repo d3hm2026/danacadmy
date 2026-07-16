@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const session = await auth();
-  if (!session || session.user.role !== "admin") {
+  if (!session || !["owner", "admin"].includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -15,6 +15,7 @@ export async function GET() {
       units: {
         include: { _count: { select: { lessons: true } } },
       },
+      instructor: { select: { id: true, name: true } },
     },
   });
 
@@ -23,15 +24,15 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const session = await auth();
-  if (!session || session.user.role !== "admin") {
+  if (!session || !["owner", "admin"].includes(session.user.role)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { title, description } = await req.json();
+  const { title, description, instructorId } = await req.json();
   if (!title) return NextResponse.json({ error: "Title required" }, { status: 400 });
 
   const course = await prisma.course.create({
-    data: { title, description },
+    data: { title, description, ...(instructorId && { instructorId }) },
   });
 
   return NextResponse.json(course, { status: 201 });

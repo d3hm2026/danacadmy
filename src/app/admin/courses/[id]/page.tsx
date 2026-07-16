@@ -9,7 +9,8 @@ type QuizQuestion = { id: string; text: string; order: number; choices: Choice[]
 type Quiz = { id: string; title: string; passingScore: number; questions: QuizQuestion[] };
 type Lesson = { id: string; title: string; type: string; order: number };
 type Unit = { id: string; title: string; order: number; lessons: Lesson[]; quiz: Quiz | null };
-type Course = { id: string; title: string; description: string | null; isPublished: boolean; units: Unit[] };
+type Instructor = { id: string; name: string | null; phone: string };
+type Course = { id: string; title: string; description: string | null; isPublished: boolean; instructorId: string | null; instructor: Instructor | null; units: Unit[] };
 
 export default function CourseManagePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -24,6 +25,7 @@ export default function CourseManagePage({ params }: { params: Promise<{ id: str
   const [addingUnit, setAddingUnit] = useState(false);
   const [newLessonTitles, setNewLessonTitles] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [instructors, setInstructors] = useState<Instructor[]>([]);
 
   const fetchCourse = async () => {
     const res = await fetch(`/api/admin/courses/${id}`);
@@ -34,7 +36,10 @@ export default function CourseManagePage({ params }: { params: Promise<{ id: str
     setLoading(false);
   };
 
-  useEffect(() => { fetchCourse(); }, [id]);
+  useEffect(() => {
+    fetchCourse();
+    fetch("/api/admin/instructors").then((r) => r.json()).then(setInstructors).catch(() => {});
+  }, [id]);
 
   const saveInfo = async () => {
     setSaving(true);
@@ -180,6 +185,26 @@ export default function CourseManagePage({ params }: { params: Promise<{ id: str
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-[#1a2e5a]">{course.title}</h1>
               {course.description && <p className="text-gray-500 mt-1 text-sm">{course.description}</p>}
+              <div className="mt-3 flex items-center gap-2">
+                <span className="text-xs text-gray-500">المعلم المسؤول:</span>
+                <select
+                  value={course.instructorId ?? ""}
+                  onChange={async (e) => {
+                    await fetch(`/api/admin/courses/${id}`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ instructorId: e.target.value || null }),
+                    });
+                    fetchCourse();
+                  }}
+                  className="border border-gray-200 rounded-xl px-3 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1a2e5a]"
+                >
+                  <option value="">— بدون معلم —</option>
+                  {instructors.map((ins) => (
+                    <option key={ins.id} value={ins.id}>{ins.name ?? ins.phone}</option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="flex gap-2 shrink-0">
               <button

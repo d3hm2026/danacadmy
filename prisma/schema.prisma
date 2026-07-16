@@ -25,19 +25,22 @@ model User {
   ratings       CourseRating[]
   points        UserPoints?
   badges        Badge[]
+  taughtCourses Course[] @relation("InstructorCourses")
 }
 
 model Course {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  thumbnail   String?
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  units       Unit[]
-  enrollments Enrollment[]
-  ratings     CourseRating[]
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  thumbnail    String?
+  isPublished  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  instructorId String?
+  instructor   User?    @relation("InstructorCourses", fields: [instructorId], references: [id])
+  units        Unit[]
+  enrollments  Enrollment[]
+  ratings      CourseRating[]
 }
 
 model Unit {

@@ -12,6 +12,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     prisma.course.findUnique({
       where: { id, isPublished: true },
       include: {
+        instructor: { select: { id: true, name: true } },
         enrollments: { where: { userId: session.user.id } },
         units: {
           orderBy: { order: "asc" },

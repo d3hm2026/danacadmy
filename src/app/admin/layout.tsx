@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin") redirect("/login");
+  if (!session || !["owner", "admin"].includes(session.user.role)) redirect("/login");
 
   const pendingCount = await prisma.registrationRequest.count({ where: { status: "pending" } });
 
@@ -39,11 +39,25 @@ export default async function AdminLayout({ children }: { children: React.ReactN
                   </span>
                 )}
               </Link>
+              <Link href="/admin/instructors" className="px-3 py-1.5 text-sm rounded-lg hover:bg-gray-100 text-gray-700">
+                المستخدمون
+              </Link>
             </div>
           </div>
-          <form action="/api/auth/signout" method="POST">
-            <button className="text-sm text-gray-500 hover:text-gray-700">خروج</button>
-          </form>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-700 font-medium">{session.user.name}</span>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                session.user.role === "owner" ? "bg-purple-100 text-purple-700" :
+                session.user.role === "admin" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600"
+              }`}>
+                {session.user.role === "owner" ? "صاحب المنصة" : "مشرف"}
+              </span>
+            </div>
+            <form action="/api/auth/signout" method="POST">
+              <button className="text-sm text-gray-500 hover:text-gray-700">خروج</button>
+            </form>
+          </div>
         </div>
       </nav>
       <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>

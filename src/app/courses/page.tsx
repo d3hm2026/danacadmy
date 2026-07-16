@@ -30,6 +30,7 @@ export default async function CoursesPage() {
       units: { include: { _count: { select: { lessons: true } } } },
       enrollments: { where: { userId: session.user.id }, select: { id: true } },
       ratings: { select: { rating: true } },
+      instructor: { select: { id: true, name: true } },
     },
   });
 
@@ -91,6 +92,9 @@ export default async function CoursesPage() {
                     <p className="text-sm text-gray-500 line-clamp-2 mb-2">{course.description}</p>
                   )}
 
+                  {course.instructor?.name && (
+                    <p className="text-xs text-gray-500 mb-1">بإشراف: {course.instructor.name}</p>
+                  )}
                   <StarRating avg={avg} count={count} />
 
                   <div className="flex gap-3 text-xs text-gray-400 mb-4 mt-2">

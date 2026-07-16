@@ -5,7 +5,7 @@ import * as XLSX from "xlsx";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin")
+  if (!session || !["owner","admin"].includes(session?.user?.role ?? ""))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id: examId } = await params;

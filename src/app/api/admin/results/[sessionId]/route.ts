@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(_: NextRequest, { params }: { params: Promise<{ sessionId: string }> }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin")
+  if (!session || !["owner","admin"].includes(session?.user?.role ?? ""))
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { sessionId } = await params;

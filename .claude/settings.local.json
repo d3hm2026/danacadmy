@@ -35,7 +35,15 @@
       "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\courses\\\\[id]\\\\enrollments\\\\[enrollmentId]\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\api\\\\admin\\\\courses\\\\[id]\\\\stats\")",
       "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\admin\\\\courses\\\\[id]\\\\enrollments\")",
-      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\admin\\\\courses\\\\[id]\\\\stats\")"
+      "Bash(mkdir -p \"C:\\\\Users\\\\Abdulrahman\\\\Desktop\\\\danacadmy\\\\src\\\\app\\\\admin\\\\courses\\\\[id]\\\\stats\")",
+      "Bash(cat src/lib/prisma.ts)",
+      "Bash(cat src/lib/db.ts)",
+      "Bash(ping ep-plain-grass-at66adl3.c-9.us-east-1.aws.neon.tech -n 2)",
+      "Bash(mkdir -p \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/notifications/[id]\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/notifications/read-all\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/admin/courses/[id]/notify\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/admin/comments/[commentId]\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/lessons/[lessonId]/comments\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/courses/[id]/certificate\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/courses/[id]/rate\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/api/search\" 2>&1 && echo \"done\")",
+      "Bash(mkdir -p \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/courses/[id]/certificate\" \"C:/Users/Abdulrahman/Desktop/danacadmy/src/app/search\" 2>&1 && echo done)",
+      "PowerShell($ts = Get-Date -Format \"yyyyMMddHHmmss\"; $dir = \"C:/Users/Abdulrahman/Desktop/danacadmy/prisma/migrations/${ts}_add_notifications_comments_ratings_points_badges\"; New-Item -ItemType Directory -Force -Path $dir | Out-Null; Write-Output $dir)",
+      "Bash(xargs grep -l 'session\\\\?\\\\.user\\\\?\\\\.role !== \"admin\"')",
+      "Bash(xargs sed -i 's/session\\\\?\\\\.user\\\\?\\\\.role !== \"admin\"/![\"owner\",\"admin\"].includes\\(session?.user?.role ?? \"\"\\)/g')"
     ]
   }
 }

@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+
+type Instructor = { id: string; name: string | null; phone: string };
 
 export default function NewCoursePage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [instructorId, setInstructorId] = useState("");
+  const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/admin/instructors").then((r) => r.json()).then(setInstructors).catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +27,7 @@ export default function NewCoursePage() {
     const res = await fetch("/api/admin/courses", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: title.trim(), description: description.trim() || null }),
+      body: JSON.stringify({ title: title.trim(), description: description.trim() || null, instructorId: instructorId || null }),
     });
     if (res.ok) {
       const course = await res.json();
@@ -60,6 +68,22 @@ export default function NewCoursePage() {
               className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2e5a] resize-none"
             />
           </div>
+
+          {instructors.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">المعلم المسؤول</label>
+              <select
+                value={instructorId}
+                onChange={(e) => setInstructorId(e.target.value)}
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1a2e5a]"
+              >
+                <option value="">— بدون معلم —</option>
+                {instructors.map((ins) => (
+                  <option key={ins.id} value={ins.id}>{ins.name ?? ins.phone}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 

@@ -18,6 +18,7 @@ type Course = {
   avgRating: number;
   ratingCount: number;
   userRating: number | null;
+  instructor: { id: string; name: string | null } | null;
 };
 
 function StarRow({ value, onChange }: { value: number; onChange: (n: number) => void }) {
@@ -144,6 +145,9 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
           <Link href="/courses" className="text-white/60 text-sm hover:text-white mb-4 inline-block">← الدورات</Link>
           <h1 className="text-3xl font-bold mb-3">{course.title}</h1>
           {course.description && <p className="text-white/80 text-lg">{course.description}</p>}
+          {course.instructor?.name && (
+            <p className="text-white/60 text-sm mt-1">بإشراف: {course.instructor.name}</p>
+          )}
 
           <div className="mt-3 mb-4">
             <AvgStars avg={course.avgRating} count={course.ratingCount} />

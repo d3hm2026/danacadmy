@@ -10,6 +10,7 @@ type Course = {
   isPublished: boolean;
   _count: { units: number; enrollments: number };
   units: { _count: { lessons: number } }[];
+  instructor: { id: string; name: string | null } | null;
 };
 
 export default function AdminCoursesPage() {
@@ -71,6 +72,9 @@ export default function AdminCoursesPage() {
                 <span>{course._count.units} وحدة</span>
                 <span>{totalLessons(course)} درس</span>
                 <span>{course._count.enrollments} طالب مسجّل</span>
+                {course.instructor && (
+                  <span className="text-green-600">👤 {course.instructor.name}</span>
+                )}
               </div>
             </div>
 

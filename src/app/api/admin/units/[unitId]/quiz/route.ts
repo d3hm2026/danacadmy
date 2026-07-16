@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ unitId: string }> }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin") {
+  if (!session || !["owner","admin"].includes(session?.user?.role ?? "")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -19,7 +19,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ unitId:
 
 export async function POST(req: Request, { params }: { params: Promise<{ unitId: string }> }) {
   const session = await auth();
-  if (!session || session.user.role !== "admin") {
+  if (!session || !["owner","admin"].includes(session?.user?.role ?? "")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

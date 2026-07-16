@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string; enrollmentId: string }> }) {
   const session = await auth();
-  if (session?.user?.role !== "admin") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session || !["owner","admin"].includes(session.user.role)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { enrollmentId } = await params;
   const { status } = await req.json(); // approved | rejected
@@ -44,7 +44,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string; enrollmentId: string }> }) {
   const session = await auth();
-  if (session?.user?.role !== "admin") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session || !["owner","admin"].includes(session.user.role)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { enrollmentId } = await params;
   await prisma.enrollment.delete({ where: { id: enrollmentId } });
